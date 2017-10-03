@@ -228,6 +228,10 @@ class Status < ApplicationRecord
     @emojis = CustomEmoji.from_text(fields.join(' '), account.domain)
   end
 
+  def avatar_emojis
+    AvatarEmoji.from_text([spoiler_text, text].join(' '), account.domain)
+  end
+
   def replies_count
     status_stat&.replies_count || 0
   end
