@@ -44,7 +44,7 @@ class Status < ApplicationRecord
 
   update_index('statuses#status', :proper)
 
-  enum visibility: [:public, :unlisted, :private, :direct, :limited], _suffix: :visibility
+  enum visibility: [:public, :unlisted, :private, :unleakable, :direct, :limited], _suffix: :visibility
 
   belongs_to :application, class_name: 'Doorkeeper::Application', optional: true
 
@@ -322,6 +322,8 @@ class Status < ApplicationRecord
         # followers can see followers-only stuff, but also things they are mentioned in.
         # non-followers can see everything that isn't private/direct, but can see stuff they are mentioned in.
         visibility.push(:private) if account.following?(target_account)
+        # followed users can see unleakable toots.
+        visibility.push(:unleakable) if account.followed_by?(target_account)
 
         scope = left_outer_joins(:reblog)
 
@@ -414,7 +416,7 @@ class Status < ApplicationRecord
   end
 
   def increment_counter_caches
-    return if direct_visibility?
+    return if unleakable_visibility? || direct_visibility?
 
     account&.increment_count!(:statuses_count)
     reblog&.increment_count!(:reblogs_count) if reblog?
@@ -422,7 +424,7 @@ class Status < ApplicationRecord
   end
 
   def decrement_counter_caches
-    return if direct_visibility?
+    return if unleakable_visibility? || direct_visibility?
 
     account&.decrement_count!(:statuses_count)
     reblog&.decrement_count!(:reblogs_count) if reblog?

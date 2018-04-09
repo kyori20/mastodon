@@ -1211,6 +1211,14 @@
         "id": "privacy.private.long"
       },
       {
+        "defaultMessage": "Unleakable",
+        "id": "privacy.unleakable.short"
+      },
+      {
+        "defaultMessage": "Post to followed users only",
+        "id": "privacy.unleakable.long"
+      },
+      {
         "defaultMessage": "Direct",
         "id": "privacy.direct.short"
       },
@@ -1383,6 +1391,10 @@
       {
         "defaultMessage": "locked",
         "id": "compose_form.lock_disclaimer.lock"
+      },
+      {
+        "defaultMessage": "This post is for followed users. Only users you're following can view ones.",
+        "id": "compose_form.unleakable_disclaimer"
       },
       {
         "defaultMessage": "This toot won't be listed under any hashtag as it is unlisted. Only public toots can be searched by hashtag.",
