@@ -1,9 +1,20 @@
 # frozen_string_literal: true
 
 class ProcessHashtagsService < BaseService
+  DEFAULT_HASHTAG = "nitiasa"
+  IGNORE_DEFAULT_HASHTAG = "notag"
+
   def call(status, tags = [])
-    tags    = Extractor.extract_hashtags(status.text) if status.local?
     records = []
+
+    if status.local?
+      tags = Extractor.extract_hashtags(status.text)
+
+      if !tags.include?(DEFAULT_HASHTAG) && !tags.include?(IGNORE_DEFAULT_HASHTAG) && status.public_visibility? && !status.reply? then
+        tags << DEFAULT_HASHTAG
+        status.update(text: "#{status.text} ##{DEFAULT_HASHTAG}")
+      end
+    end
 
     Tag.find_or_create_by_names(tags) do |tag|
       status.tags << tag

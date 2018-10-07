@@ -806,7 +806,7 @@ const startWorker = (workerId) => {
       break;
     case 'public:local':
       resolve({
-        channelIds: ['timeline:public:local'],
+        channelIds: ['timeline:hashtag:nitiasa'],
         options: { needsFiltering: true, notificationOnly: false },
       });
 

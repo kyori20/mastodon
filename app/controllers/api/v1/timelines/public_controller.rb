@@ -33,12 +33,25 @@ class Api::V1::Timelines::PublicController < Api::BaseController
   end
 
   def public_feed
-    PublicFeed.new(
-      current_account,
-      local: truthy_param?(:local),
-      remote: truthy_param?(:remote),
-      only_media: truthy_param?(:only_media)
-    )
+    if truthy_param?(:local)
+      TagFeed.new(
+        Tag::find_by_name(ProcessHashtagsService::DEFAULT_HASHTAG),
+        current_account,
+        any: [],
+        all: [],
+        none: [],
+        local: false,
+        remote: truthy_param?(:remote),
+        only_media: truthy_param?(:only_media)
+      )
+    else
+      PublicFeed.new(
+        current_account,
+        local: false,
+        remote: truthy_param?(:remote),
+        only_media: truthy_param?(:only_media)
+      )
+    end
   end
 
   def insert_pagination_headers

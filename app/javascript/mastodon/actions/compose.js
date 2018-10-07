@@ -10,6 +10,7 @@ import { updateTimeline } from './timelines';
 import { showAlertForError } from './alerts';
 import { showAlert } from './alerts';
 import { defineMessages } from 'react-intl';
+import TwitterText from 'twitter-text';
 
 let cancelFetchComposeSuggestionsAccounts, cancelFetchComposeSuggestionsTags;
 
@@ -62,6 +63,9 @@ export const COMPOSE_POLL_OPTION_ADD      = 'COMPOSE_POLL_OPTION_ADD';
 export const COMPOSE_POLL_OPTION_CHANGE   = 'COMPOSE_POLL_OPTION_CHANGE';
 export const COMPOSE_POLL_OPTION_REMOVE   = 'COMPOSE_POLL_OPTION_REMOVE';
 export const COMPOSE_POLL_SETTINGS_CHANGE = 'COMPOSE_POLL_SETTINGS_CHANGE';
+
+const DEFAULT_HASHTAG = 'nitiasa';
+const IGNORE_DEFAULT_HASHTAG = 'notag';
 
 const messages = defineMessages({
   uploadErrorLimit: { id: 'upload_error.limit', defaultMessage: 'File upload limit exceeded.' },
@@ -130,12 +134,18 @@ export function directCompose(account, routerHistory) {
 
 export function submitCompose(routerHistory) {
   return function (dispatch, getState) {
-    const status = getState().getIn(['compose', 'text'], '');
-    const media  = getState().getIn(['compose', 'media_attachments']);
+    const rawStatus = getState().getIn(['compose', 'text'], '');
+    const media     = getState().getIn(['compose', 'media_attachments']);
 
-    if ((!status || !status.length) && media.size === 0) {
+    if ((!rawStatus || !rawStatus.length) && media.size === 0) {
       return;
     }
+
+    const { status, addToLocal } = handleDefaultTag(
+      rawStatus,
+      getState().getIn(['compose', 'privacy']),
+      getState().getIn(['compose', 'in_reply_to']),
+    );
 
     dispatch(submitComposeRequest());
 
@@ -174,7 +184,9 @@ export function submitCompose(routerHistory) {
       }
 
       if (response.data.in_reply_to_id === null && response.data.visibility === 'public') {
-        insertIfOnline('community');
+        if (addToLocal) {
+          insertIfOnline('community');
+        }
         insertIfOnline('public');
         insertIfOnline(`account:${response.data.account.id}`);
       }
@@ -182,6 +194,19 @@ export function submitCompose(routerHistory) {
       dispatch(submitComposeFail(error));
     });
   };
+};
+
+const handleDefaultTag = (status, visibility, in_reply_to) => {
+  const tags = TwitterText.extractHashtags(status);
+  const hasHashtags = tags.length > 0;
+  const hasDefaultHashtag = hasHashtags ? tags.some(tag => tag === DEFAULT_HASHTAG) : false;
+  const hasNoTagHashtag   = hasHashtags ? tags.some(tag => tag === IGNORE_DEFAULT_HASHTAG) : false;
+  const isPublic = (visibility === 'public');
+
+  if (!hasDefaultHashtag && !hasNoTagHashtag && isPublic && !in_reply_to) {
+    return { status: `${status} #${DEFAULT_HASHTAG}`, addToLocal: true };
+  }
+  return { status, addToLocal: hasDefaultHashtag };
 };
 
 export function submitComposeRequest() {
