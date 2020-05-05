@@ -88,6 +88,7 @@ module.exports = {
   ],
 
   resolve: {
+    symlinks: false,
     extensions: settings.extensions,
     modules: [
       resolve(settings.source_path),
