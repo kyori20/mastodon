@@ -183,6 +183,10 @@ class Account < ApplicationRecord
     "#{username}@#{Rails.configuration.x.local_domain}"
   end
 
+  def receive_local_everyone
+    local? && ( user.nil? ? false : user.confirmed? ) && !suspended? && !bot?
+  end
+
   def local_followers_count
     Follow.where(target_account_id: id).count
   end
