@@ -26,6 +26,12 @@ class ProcessMentionsService < BaseService
 
       mentioned_account = Account.find_remote(username, domain)
 
+      if username.eql?("everyone") && ( domain.nil? || domain.eql?(Rails.configuration.x.local_domain) ) && status.account.user.staff?
+        Account.where(domain: nil).each do |account|
+          mentions << account.mentions.where(status: status).first_or_create(status: status) if account.receive_local_everyone
+        end
+      end
+
       if mention_undeliverable?(mentioned_account)
         begin
           mentioned_account = resolve_account_service.call(Regexp.last_match(1))
