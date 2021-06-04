@@ -10,7 +10,7 @@ RSpec.describe PostStatusService, type: :service do
     status = subject.call(account, text: text)
 
     expect(status).to be_persisted
-    expect(status.text).to eq text
+    expect(status.text).to eq "#{text} #nitiasa"
   end
 
   it 'creates a new response status' do
