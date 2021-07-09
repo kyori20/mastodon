@@ -67,7 +67,7 @@ module AccountInteractions
     private
 
     def follow_mapping(query, field)
-      query.pluck(field).each_with_object({}) { |id, mapping| mapping[id] = true }
+      query.pluck(field).index_with(true)
     end
   end
 
@@ -186,6 +186,14 @@ module AccountInteractions
 
   def followed_by?(other_account)
     passive_relationships.where(account: other_account).exists?
+  end
+
+  def following_anyone?
+    active_relationships.exists?
+  end
+
+  def not_following_anyone?
+    !following_anyone?
   end
 
   def blocking?(other_account)
