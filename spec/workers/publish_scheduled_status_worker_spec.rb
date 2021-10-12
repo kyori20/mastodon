@@ -13,7 +13,7 @@ describe PublishScheduledStatusWorker do
     end
 
     it 'creates a status' do
-      expect(scheduled_status.account.statuses.first.text).to eq 'Hello world, future!'
+      expect(scheduled_status.account.statuses.first.text).to eq 'Hello world, future! #nitiasa'
     end
 
     it 'removes the scheduled status' do
