@@ -28,9 +28,9 @@ Includes these branches below.
 * [custom/everyone](#customeveryone)
 * [custom/odakyudon](#customodakyudon)
 * [custom/pgroonga](#custompgroonga)
-* [custom/private-filter](#customprivate-filter)
 * [custom/quote](#customquote)
 * [custom/unleakable](#customunleakable)
+* <strike>[custom/private-filter](#customprivate-filter)</strike>
 
 ### [nitiasadon](https://github.com/accelforce/mastodon/tree/nitiasadon)
 
@@ -70,6 +70,8 @@ Small improvements applied to [odakyudon](https://odakyu.app/).
 Feature branch of full-text search feature using pgroonga.
 
 ### [custom/private-filter](https://github.com/accelforce/mastodon/tree/custom/private-filter)
+
+**EOS: This feature no longer be supported.**
 
 Feature branch of filtering feature of private statuses.
 
