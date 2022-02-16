@@ -429,12 +429,6 @@ class FeedManager
     active_filters.select! { |filter| filter.context.include?(context.to_s) && !filter.expired? }
 
     active_filters.map! do |filter|
-      if filter.phrase.start_with?('private-filter:@')
-        mention = filter.phrase[16..-1]
-        username, domain  = mention.split('@')
-        mentioned_account = Account.find_remote(username, domain)
-        return true if status.hidden? && status.account.eql?(mentioned_account)
-      end
       if filter.whole_word
         sb = /\A[[:word:]]/.match?(filter.phrase) ? '\b' : ''
         eb = /[[:word:]]\z/.match?(filter.phrase) ? '\b' : ''
