@@ -15,4 +15,4 @@ jobs:
       - name: Create PR
         run: gh pr create -B custom/cat -H mastodon:main -t "Scheduled update from upstream" -b "Created by GitHub Actions" --no-maintainer-edit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
