@@ -25,7 +25,11 @@ jobs:
                 name: "refs/heads/merge/custom/odakyudon",
                 oid: "${{ steps.branch_ref.outputs.value }}",
                 repositoryId: "R_kgDOG5U7rQ",
-              })
+              }) {
+                ref {
+                  id
+                }
+              }
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
