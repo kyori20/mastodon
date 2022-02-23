@@ -16,7 +16,9 @@ jobs:
 
       - name: Extract branch ref
         id: branch_ref
-        run: echo "::set-output name=value::$(cat .git/remotes/origin/custom/odakyudon)"
+        run: |
+          ls -alF .git/remotes/origin
+          echo "::set-output name=value::$(cat .git/remotes/origin/custom/odakyudon)"
 
       - name: Clone branch
         uses: octokit/graphql-action@v2.x
