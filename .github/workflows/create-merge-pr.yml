@@ -1,0 +1,36 @@
+name: Create Merge PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Prepare Git Repository
+        uses: actions/checkout@v2
+
+      - name: Extract branch ref
+        id: branch_ref
+        run: echo "::set-output name=value::$(cat .git/refs/heads/custom/odakyudon)"
+
+      - name: Clone branch
+        uses: octokit/graphql-action@v2
+        with:
+          query: |
+            mutation { 
+              createRef(input: {
+                name: "refs/heads/merge/custom/odakyudon",
+                oid: "${{ steps.branch_ref.outputs.value }}",
+                repositoryId: "R_kgDOG5U7rQ",
+              })
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR
+        run: gh pr create -B merge/custom/odakyudon -H mastodon:main -t "Scheduled update from upstream" -b "Created by GitHub Actions" --no-maintainer-edit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
