@@ -11,6 +11,8 @@ jobs:
 
       - name: Prepare Git Repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Extract branch ref
         id: branch_ref
