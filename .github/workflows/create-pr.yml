@@ -13,6 +13,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create PR
-        run: hub pull-request -b custom/cat -h mastodon:main -m "Scheduled update from upstream" -m "Created by GitHub Actions"
+        run: gh pr create -B custom/cat -H mastodon:main -t "Scheduled update from upstream" -b "Created by GitHub Actions" --no-maintainer-edit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
