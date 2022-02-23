@@ -17,7 +17,7 @@ jobs:
         run: echo "::set-output name=value::$(cat .git/refs/heads/custom/odakyudon)"
 
       - name: Clone branch
-        uses: octokit/graphql-action@v2
+        uses: octokit/graphql-action@v2.x
         with:
           query: |
             mutation { 
