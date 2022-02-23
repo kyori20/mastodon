@@ -9,6 +9,9 @@ jobs:
 
     steps:
 
+      - name: Prepare Git Repository
+        run: git init
+
       - name: Create PR
         run: gh pr create -R ${{ github.repository }} -B custom/cat -H mastodon:main -t "Scheduled update from upstream" -b "Created by GitHub Actions"
         env:
